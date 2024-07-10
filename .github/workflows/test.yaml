@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ~/.vaadin/
-          echo '{"username":"'`echo ${{secrets.VAADIN_PROKEY}} | cut -d / -f1`'","proKey":"'`echo ${{secrets.VAADIN_PROKEY}} | cut -d / -f2`'"}' > ~/.vaadin/proKey
+          echo '${{secrets.VAADIN_OFFLINE_KEY}}' > ~/.vaadin/offlineKey
 
       - name: Set up Maven 3.9.6
         uses: stCarolas/setup-maven@v5
