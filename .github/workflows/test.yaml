@@ -1,8 +1,11 @@
 on:
   push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  run_tests:
+  build:
     name: run_tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -20,11 +23,40 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+          cache: maven
+
+      - name: Set up Maven 3.9.6
+        uses: stCarolas/setup-maven@v5
+        with:
+            maven-version: 3.9.6
+
+      - name: Set up Node.js lts/*
+        uses: actions/setup-node@v4
+        with:
+            node-version: lts/*
+            cache: 'npm'
+
+      - name: npm install
+        shell: bash
+        run: npm --silent install
+
+      - name: mvn clean
+        shell: bash
+        run: mvn -ntp -B -q clean
 
       - uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: stable
 
+      - uses: nanasess/setup-chromedriver@master
+
+      - name: Run Chromedriver
+        shell: bash
+        run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
+
       - name: run test
         run: |
-          mvn verify -Dvaadin.offlineKey="${{secrets.VAADIN_OFFLINE_KEY}}" -Pit -B -T 4C --no-transfer-progress
+          mvn verify -Dvaadin.offlineKey="${{secrets.VAADIN_OFFLINE_KEY}}" -Pit -B -T 4C -DghActions=true -Dcom.vaadin.testbench.Parameters.runLocally=chrome --no-transfer-progress

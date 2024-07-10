@@ -4,6 +4,7 @@ import com.example.application.Application;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.testbench.BrowserTest;
 import com.vaadin.testbench.BrowserTestBase;
+import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.annotations.RunLocally;
 import com.vaadin.testbench.parallel.Browser;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +20,12 @@ public class BasicUiTestIT extends BrowserTestBase {
 
 	@BeforeEach
 	protected void setUp() {
-
+		if (Boolean.getBoolean("ghActions")) {
+			System.out.println("---- ghActions ----");
+			Parameters.setHeadless(true);
+			Parameters.setChromeOptions("--no-sandbox --disable-extensions "
+										+ "--disable-gpu --disable-dev-shm-usage");
+		}
 		getDriver().get("http://localhost:8080");
 		getCommandExecutor().waitForVaadin();
 	}
