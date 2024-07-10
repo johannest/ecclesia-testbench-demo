@@ -36,9 +36,9 @@ jobs:
             node-version: lts/*
             cache: 'npm'
 
-      - name: npm install
-        shell: bash
-        run: npm --silent install
+#      - name: npm install
+#        shell: bash
+#        run: npm --silent install
 
       - name: mvn clean
         shell: bash
