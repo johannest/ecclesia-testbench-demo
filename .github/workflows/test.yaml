@@ -24,6 +24,11 @@ jobs:
           java-version: 17
           distribution: temurin
           cache: maven
+      - name: Set TB License
+        shell: bash
+        run: |
+          mkdir -p ~/.vaadin/
+          echo '{"username":"'`echo ${{secrets.VAADIN_PROKEY}} | cut -d / -f1`'","proKey":"'`echo ${{secrets.VAADIN_PROKEY}} | cut -d / -f2`'"}' > ~/.vaadin/proKey
 
       - name: Set up Maven 3.9.6
         uses: stCarolas/setup-maven@v5
@@ -45,4 +50,4 @@ jobs:
 
       - name: run test
         run: |
-          mvn verify -Dvaadin.offlineKey="${{secrets.VAADIN_OFFLINE_KEY}}" -Pit -B -T 4C -DghActions=true -Dcom.vaadin.testbench.Parameters.runLocally=chrome --no-transfer-progress
+          mvn verify -Pit -B -T 4C -DghActions=true -Dcom.vaadin.testbench.Parameters.runLocally=chrome --no-transfer-progress
