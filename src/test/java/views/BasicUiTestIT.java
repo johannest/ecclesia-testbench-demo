@@ -20,26 +20,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 @RunLocally(Browser.CHROME)
 public class BasicUiTestIT extends BrowserTestBase {
 
-	@BeforeAll
-	protected static void setupClass() {
-		//if (Boolean.getBoolean("ghActions")) {
-		System.out.println("---- ghActions ----");
-		Parameters.setHeadless(true);
-		Parameters.setChromeOptions("--no-sandbox --disable-extensions "
-									+ "--disable-gpu --disable-dev-shm-usage");
-		//}
-	}
+    @BeforeAll
+    protected static void setupClass() {
+        if (Boolean.getBoolean("ghActions")) {
+            Parameters.setHeadless(true);
+            Parameters.setChromeOptions("--no-sandbox --disable-extensions "
+                                        + "--disable-gpu --disable-dev-shm-usage");
+        }
+    }
 
-	@BeforeEach
-	protected void setUp() {
-		getDriver().manage().window().setSize(new Dimension(1920, 1080));
-		getDriver().get("http://localhost:8080");
-		getCommandExecutor().waitForVaadin();
-	}
+    @BeforeEach
+    protected void setUp() {
+        getDriver().manage().window().setSize(new Dimension(1920, 1080));
+        getDriver().get("http://localhost:8080");
+        getCommandExecutor().waitForVaadin();
+    }
 
-	@BrowserTest
-	void testButtonText() {
-		ButtonElement button = $(ButtonElement.class).first();
-		Assertions.assertEquals("TEST", button.getText());
-	}
+    @BrowserTest
+    void testButtonText() {
+        ButtonElement button = $(ButtonElement.class).first();
+        Assertions.assertEquals("TEST", button.getText());
+    }
 }
